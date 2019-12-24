@@ -15,7 +15,7 @@ COLOUR_BOUNDS = [
                 ]
 
 class resReader:
-
+   
     def __init__(self):
         self.img = None
         self.res_img = None
@@ -73,3 +73,4 @@ if __name__=='__main__':
     # print(r.read_value())
 
     r.read_band(img)
+    # aaa
