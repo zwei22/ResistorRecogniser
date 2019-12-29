@@ -20,9 +20,12 @@ FONT = cv2.FONT_HERSHEY_SIMPLEX
 
 class resReader:
    
-    def __init__(self, img):
+    def __init__(self):
+        pass
+
+    def read_img(self, img):
         self.img = img
-        self.pos = (0, 0, len(self.img[0]),len(self.img))
+        self.pos = (0, 0, self.img.shape[0], self.img.shape[1])
 
     def validContour(self, cnt):
         #looking for a large enough area and correct aspect ratio
@@ -74,7 +77,7 @@ class resReader:
             
             cv2.drawContours(img_bil, contours, -1, clr[-1], 3)
                               
-        cv2.imshow('Contour Display', img_bil)#shows the most recent resistor checked.
+        # cv2.imshow('Contour Display', img_bil)#shows the most recent resistor checked.
 
         #sort by 1st element of each tuple and return
         return sorted(bandsPos, key=lambda tup: tup[0])
@@ -95,7 +98,7 @@ class resReader:
             #cv2.putText(liveimg,str(intVal) + " OHMS",(x,y+int(h/2)), FONT, 1,(255,255,255),2,cv2.LINE_AA)
             return str(intVal) + " OHMS"
         #draw a red rectangle indicating an error reading the bands
-        cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
+        # cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
         return "-"
 
     def print_result(self, result):
