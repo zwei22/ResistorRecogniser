@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 COLOUR_BOUNDS = [
-                [(0, 0, 0)   , (179, 74, 64)  ,   "BLACK"  , 0 , (0,0,0)       ],    
+                [(0, 0, 0)   , (179, 74, 90)  ,   "BLACK"  , 0 , (0,0,0)       ],    
                 [(0, 40, 0)    , (13, 106, 110)  , "BROWN"  , 1 , (0,51,102)    ],    
                 [(0, 101, 80) , (13, 154, 155)  , "RED"    , 2 , (0,0,255)     ],
                 [(11, 77, 95), (14, 162, 160)  , "ORANGE" , 3 , (0,128,255)   ], 
@@ -110,7 +110,7 @@ class resReader:
         # cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
 
         else:
-            return "-"
+            return ""
 
     def print_result(self, result):
         print(result)

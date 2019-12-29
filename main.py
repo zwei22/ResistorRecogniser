@@ -9,11 +9,15 @@ CASCADE_PATH = './model/cascade.xml'
 
 def main():
 
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
+    # cap.set(28,255)
+    # cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
+    
     finder = resFinder(CASCADE_PATH)
     reader = resReader()
-
+    last = dict()
     while not cv2.waitKey(1) & 0xFF == ord('q'):
+        curr = dict()
         ret, frame = cap.read()
         res = finder.find_res(frame)
 
@@ -27,9 +31,17 @@ def main():
             reader.read_img(frame[y:y+h, x:x+w])
             sorted_band = reader.read_band()
             result = reader.read_value(sorted_band, frame)
-            print(result)
-            cv2.putText(frame, result, (x, y-10), FONT, 1, (255,0,0),2,cv2.LINE_AA)
 
+            
+            for (xl, yl) in last.keys():
+                if (xl-x)**2+(yl-y)**2 < 100 and result == '':
+                    result = last[(xl, yl)]
+
+            curr[(x,y)] = result
+
+            cv2.putText(frame, result, (x, y-10), FONT, 1, (255,0,0),2 ,cv2.LINE_AA)
+
+        last = curr
         cv2.imshow('frame', frame)
 
 
