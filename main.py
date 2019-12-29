@@ -20,14 +20,15 @@ def main():
         for (x, y, w, h) in res:
             
             y, h = y+h//4, h//2
-            print(f'{x}, {y}, {w}, {h}')
+            # print(f'{x}, {y}, {w}, {h}')
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
 
             reader.read_img(frame[x:x+w, y:y+h])
             sorted_band = reader.read_band()
             result = reader.read_value(sorted_band, frame)
-            cv2.putText(frame, result, (x, y-10), FONT, 1, (255,255,255),2,cv2.LINE_AA)
+            print(result)
+            cv2.putText(frame, result, (x, y-10), FONT, 1, (255,0,0),2,cv2.LINE_AA)
 
         cv2.imshow('frame', frame)
 
