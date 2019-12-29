@@ -9,7 +9,7 @@ CASCADE_PATH = './model/cascade.xml'
 
 def main():
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     finder = resFinder(CASCADE_PATH)
     reader = resReader()
 
@@ -24,7 +24,7 @@ def main():
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
 
-            reader.read_img(frame[x:x+w, y:y+h])
+            reader.read_img(frame[y:y+h, x:x+w])
             sorted_band = reader.read_band()
             result = reader.read_value(sorted_band, frame)
             print(result)

@@ -25,7 +25,7 @@ class resReader:
 
     def read_img(self, img):
         self.img = img
-        self.pos = (0, 0, self.img.shape[0], self.img.shape[1])
+        self.pos = (0, 0, self.img.shape[1], self.img.shape[0])
 
     def validContour(self, cnt):
         #looking for a large enough area and correct aspect ratio
@@ -44,7 +44,7 @@ class resReader:
 
     def read_band(self):
         resImg = cv2.resize(self.img, (400, 200))
-        img_bil = cv2.bilateralFilter(self.img,5,80,80)
+        img_bil = cv2.bilateralFilter(resImg,5,80,80)
         hsv = cv2.cvtColor(img_bil, cv2.COLOR_BGR2HSV)
 
         thresh = cv2.adaptiveThreshold(cv2.cvtColor(img_bil, cv2.COLOR_BGR2GRAY),255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,59,5)
@@ -68,6 +68,7 @@ class resReader:
             #filter invalid contours, store valid ones
             for k in range(len(contours)-1,-1,-1):
                 #print(contours)
+                print(self.validContour(contours[k]))
                 if (self.validContour(contours[k])):
                     leftmostPoint = tuple(contours[k][contours[k][:,:,0].argmin()][0])
                     bandsPos += [leftmostPoint + tuple(clr[2:])]
@@ -75,9 +76,9 @@ class resReader:
                 else:
                     contours.pop(k)
             
-            cv2.drawContours(img_bil, contours, -1, clr[-1], 3)
+            #cv2.drawContours(img_bil, contours, -1, clr[-1], 3)
                               
-        # cv2.imshow('Contour Display', img_bil)#shows the most recent resistor checked.
+        cv2.imshow('Contour Display', img_bil)#shows the most recent resistor checked.
 
         #sort by 1st element of each tuple and return
         return sorted(bandsPos, key=lambda tup: tup[0])
@@ -88,18 +89,31 @@ class resReader:
         strVal = ""
 
         if (len(sortedBands) in [3,4,5]):
-            for band in sortedBands[:-1]:
-                strVal += str(band[3])
+            color = []
+           # for band in sortedBands[:-1]:
+            for band in sortedBands: 
+                #strVal += str(band[3])
+                color.append(band[3])
+#           intVal = int(strVal)
+#           intVal *= 10**sortedBands[-1][3]
 
-            intVal = int(strVal)
-            intVal *= 10**sortedBands[-1][3]
+            unit = ['','k','M','G']
+            #color = self.color_value
+            q, r = divmod(color[2]+1,3)
+            value = round((1*color[0]+0.1*color[1])*pow(10,r),1)
+            return str(value)+unit[q]+'OHM'
+            
 
             #cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,255,0),2)
             #cv2.putText(liveimg,str(intVal) + " OHMS",(x,y+int(h/2)), FONT, 1,(255,255,255),2,cv2.LINE_AA)
-            return str(intVal) + " OHMS"
+            #return str(intVal) + " OHMS"
         #draw a red rectangle indicating an error reading the bands
         # cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
-        return "-"
+
+
+
+        else:
+            return "-"
 
     def print_result(self, result):
         print(result)
@@ -107,9 +121,9 @@ class resReader:
 
 if __name__=='__main__':
     #r = resReader()
-    img = cv2.imread('figures/1k_res.jpg')
-    reader = resReader(img)
-
+    img = cv2.imread('figures/test.jpg')
+    reader = resReader()
+    reader.read_img(img)
     while(not (cv2.waitKey(1) == ord('q'))):
         sorted_band = reader.read_band()
         result = reader.read_value(sorted_band, img)
