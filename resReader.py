@@ -2,16 +2,16 @@ import cv2
 import numpy as np
 
 COLOUR_BOUNDS = [
-                [(0, 0, 0)   , (179, 50, 65)  , "BLACK"  , 0 , (0,0,0)       ],    
-                [(0, 65, 45)    , (13, 170, 95)  , "BROWN"  , 1 , (0,51,102)    ],    
-                [(0, 168, 50)    , (10, 255, 150)  , "RED"    , 2 , (0,0,255)     ],
-                [(12, 145, 73)   , (20, 255, 200)  , "ORANGE" , 3 , (0,128,255)   ], 
-                [(21, 160, 125) , (30, 255, 255)  , "YELLOW" , 4 , (0,255,255)   ],
-                [(60, 30, 30)  , (95, 90, 95)   , "GREEN"  , 5 , (0,255,0)     ],  
-                [(105, 125, 40)    , (114, 255, 150)  , "BLUE"   , 6 , (255,0,0)     ],  
-                [(115, 40, 37) , (135, 100, 100) , "PURPLE" , 7 , (255,0,127)   ], 
-                [(0, 0, 70)     , (179, 50, 200)   , "GRAY"   , 8 , (128,128,128) ],      
-                [(0, 0, 200)     , (179, 10, 255)  , "WHITE"  , 9 , (255,255,255) ],
+                [(0, 0, 0)   , (179, 74, 64)  ,   "BLACK"  , 0 , (0,0,0)       ],    
+                [(0, 40, 0)    , (13, 106, 110)  , "BROWN"  , 1 , (0,51,102)    ],    
+                [(0, 101, 80) , (13, 154, 155)  , "RED"    , 2 , (0,0,255)     ],
+                [(11, 77, 95), (14, 162, 160)  , "ORANGE" , 3 , (0,128,255)   ], 
+                [(21, 160, 125), (30, 255, 255) , "YELLOW" , 4 , (0,255,255)   ],
+                [(50, 10, 51)  , (85, 59, 99)   , "GREEN"  , 5 , (0,255,0)     ],  
+                [(105, 12, 45), (113, 107, 131)  , "BLUE"   , 6 , (255,0,0)     ],  
+                [(121, 25, 61) , (160, 60, 126) , "PURPLE" , 7 , (255,0,127)   ], 
+#                [(0, 0, 70)     , (179, 50, 200)   , "GRAY"   , 8 , (128,128,128) ],      
+                [(0, 0, 200)  , (179, 10, 255)  , "WHITE"  , 9 , (255,255,255) ],
                 ]
 RED_TOP_LOWER = (160, 30, 80)
 RED_TOP_UPPER = (179, 255, 200)
@@ -33,14 +33,13 @@ class resReader:
             return False
         else:
             x,y,w,h = cv2.boundingRect(cnt)
-
             aspectRatio = float(w)/h
-
             if (aspectRatio > 0.4):
-
                 return False
-
         return True
+
+
+
 
     def read_band(self):
         resImg = cv2.resize(self.img, (400, 200))
@@ -60,7 +59,7 @@ class resReader:
             if (clr[2] == "RED"): #combining the 2 RED ranges in hsv
 
                 redMask2 = cv2.inRange(hsv, RED_TOP_LOWER, RED_TOP_UPPER)
-                mask = cv2.bitwise_or(redMask2,mask,mask)                
+                mask = cv2.bitwise_or(redMask2,mask,mask)               
 
             mask = cv2.bitwise_and(mask,thresh,mask= mask)
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -76,8 +75,8 @@ class resReader:
                 else:
                     contours.pop(k)
             
-            #cv2.drawContours(img_bil, contours, -1, clr[-1], 3)
-                              
+            cv2.drawContours(img_bil, contours, -1, clr[-1], 3)
+        cv2.imshow('Test mask', mask)             
         cv2.imshow('Contour Display', img_bil)#shows the most recent resistor checked.
 
         #sort by 1st element of each tuple and return
@@ -109,8 +108,6 @@ class resReader:
             #return str(intVal) + " OHMS"
         #draw a red rectangle indicating an error reading the bands
         # cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
-
-
 
         else:
             return "-"
