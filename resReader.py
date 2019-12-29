@@ -91,27 +91,26 @@ class resReader:
             intVal = int(strVal)
             intVal *= 10**sortedBands[-1][3]
 
-            cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,255,0),2)
-
-            cv2.putText(liveimg,str(intVal) + " OHMS",(x,y+int(h/2)), FONT, 1,(255,255,255),2,cv2.LINE_AA)
-
-            return
+            #cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,255,0),2)
+            #cv2.putText(liveimg,str(intVal) + " OHMS",(x,y+int(h/2)), FONT, 1,(255,255,255),2,cv2.LINE_AA)
+            return str(intVal) + " OHMS"
         #draw a red rectangle indicating an error reading the bands
         cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
+        return "-"
 
-    def print_result(self):
-        pass
+    def print_result(self, result):
+        print(result)
 
 
 if __name__=='__main__':
     #r = resReader()
-    img = cv2.imread('figures/2.5k_1_res.jpg')
+    img = cv2.imread('figures/1k_res.jpg')
     reader = resReader(img)
 
     while(not (cv2.waitKey(1) == ord('q'))):
         sorted_band = reader.read_band()
-        reader.read_value(sorted_band, img)
-
-        cv2.imshow("Frame",img)
+        result = reader.read_value(sorted_band, img)
+        reader.print_result(result)
+        #cv2.imshow("Frame",img)
     #cap.release()
     cv2.destroyAllWindows()
