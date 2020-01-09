@@ -2,16 +2,16 @@ import cv2
 import numpy as np
 
 COLOUR_BOUNDS = [
-                [(0, 0, 8)   , (179, 66, 31)  ,   "BLACK"  , 0 , (0,0,0)       ],    
-                [(5, 94, 30)    , (13, 199, 103)  , "BROWN"  , 1 , (0,51,102)    ],    
-                [(0, 178, 71) , (5, 225, 138)  , "RED"    , 2 , (0,0,255)     ],
-                [(7, 186, 77), (13, 235, 187)  , "ORANGE" , 3 , (0,128,255)   ], 
+                [(0, 0, 8)     , (179, 66, 31)  , "BLACK"  , 0 , (0,0,0)       ],    
+                [(5, 94, 30)   , (13, 199, 103) , "BROWN"  , 1 , (0,51,102)    ],    
+                [(0, 178, 71)  , (5, 225, 138)  , "RED"    , 2 , (0,0,255)     ],
+                [(7, 186, 77)  , (13, 235, 187) , "ORANGE" , 3 , (0,128,255)   ], 
                 [(21, 160, 125), (30, 255, 255) , "YELLOW" , 4 , (0,255,255)   ],
-                [(40, 26, 12)  , (100, 149, 50)   , "GREEN"  , 5 , (0,255,0)     ],  
-                [(105, 12, 45), (113, 107, 131)  , "BLUE"   , 6 , (255,0,0)     ],  
+                [(40, 26, 12)  , (100, 149, 50) , "GREEN"  , 5 , (0,255,0)     ],  
+                [(105, 12, 45) , (113, 107, 131), "BLUE"   , 6 , (255,0,0)     ],  
                 [(121, 25, 61) , (160, 60, 126) , "PURPLE" , 7 , (255,0,127)   ], 
-#                [(0, 0, 70)     , (179, 50, 200)   , "GRAY"   , 8 , (128,128,128) ],      
-                [(0, 0, 200)  , (179, 10, 255)  , "WHITE"  , 9 , (255,255,255) ],
+#               [(0, 0, 70)    , (179, 50, 200) , "GRAY"   , 8 , (128,128,128) ],      
+                [(0, 0, 200)   , (179, 10, 255) , "WHITE"  , 9 , (255,255,255) ],
                 ]
 RED_TOP_LOWER = (160, 30, 80)
 RED_TOP_UPPER = (179, 255, 200)
@@ -28,7 +28,6 @@ class resReader:
         self.pos = (0, 0, self.img.shape[1], self.img.shape[0])
 
     def validContour(self, cnt):
-        #looking for a large enough area and correct aspect ratio
         if(cv2.contourArea(cnt) < MIN_AREA):
             return False
         else:
@@ -37,9 +36,6 @@ class resReader:
             if (aspectRatio > 0.4):
                 return False
         return True
-
-
-
 
     def read_band(self):
         resImg = cv2.resize(self.img, (400, 200))
@@ -56,7 +52,7 @@ class resReader:
         for clr in checkColours:
             mask = cv2.inRange(hsv, clr[0], clr[1])
 
-            if (clr[2] == "RED"): #combining the 2 RED ranges in hsv
+            if (clr[2] == "RED"):
 
                 redMask2 = cv2.inRange(hsv, RED_TOP_LOWER, RED_TOP_UPPER)
                 mask = cv2.bitwise_or(redMask2,mask,mask)               
@@ -66,8 +62,6 @@ class resReader:
 
             #filter invalid contours, store valid ones
             for k in range(len(contours)-1,-1,-1):
-                #print(contours)
-                #print(self.validContour(contours[k]))
                 if (self.validContour(contours[k])):
                     leftmostPoint = tuple(contours[k][contours[k][:,:,0].argmin()][0])
                     bandsPos += [leftmostPoint + tuple(clr[2:])]
@@ -77,9 +71,8 @@ class resReader:
             
             cv2.drawContours(img_bil, contours, -1, clr[-1], 3)
         cv2.imshow('Test mask', mask)             
-        cv2.imshow('Contour Display', img_bil)#shows the most recent resistor checked.
+        cv2.imshow('Contour Display', img_bil)
 
-        #sort by 1st element of each tuple and return
         return sorted(bandsPos, key=lambda tup: tup[0])
 
     def read_value(self, sortedBands, liveimg):
@@ -89,26 +82,14 @@ class resReader:
 
         if (len(sortedBands) in [3,4,5]):
             color = []
-           # for band in sortedBands[:-1]:
             for band in sortedBands: 
-                #strVal += str(band[3])
                 color.append(band[3])
-#           intVal = int(strVal)
-#           intVal *= 10**sortedBands[-1][3]
 
             unit = ['','k','M','G']
             #color = self.color_value
             q, r = divmod(color[2]+1,3)
             value = round((1*color[0]+0.1*color[1])*pow(10,r),1)
             return str(value)+unit[q]+'OHM'
-            
-
-            #cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,255,0),2)
-            #cv2.putText(liveimg,str(intVal) + " OHMS",(x,y+int(h/2)), FONT, 1,(255,255,255),2,cv2.LINE_AA)
-            #return str(intVal) + " OHMS"
-        #draw a red rectangle indicating an error reading the bands
-        # cv2.rectangle(liveimg,(x,y),(x+w,y+h),(0,0,255),2)
-
         else:
             return ""
 
