@@ -2,12 +2,12 @@ import cv2
 import numpy as np
 
 COLOUR_BOUNDS = [
-                [(0, 0, 0)   , (179, 74, 90)  ,   "BLACK"  , 0 , (0,0,0)       ],    
-                [(0, 40, 0)    , (13, 106, 110)  , "BROWN"  , 1 , (0,51,102)    ],    
-                [(0, 101, 80) , (13, 154, 155)  , "RED"    , 2 , (0,0,255)     ],
-                [(11, 77, 95), (14, 162, 160)  , "ORANGE" , 3 , (0,128,255)   ], 
+                [(0, 0, 8)   , (179, 66, 31)  ,   "BLACK"  , 0 , (0,0,0)       ],    
+                [(5, 94, 30)    , (13, 199, 103)  , "BROWN"  , 1 , (0,51,102)    ],    
+                [(0, 178, 71) , (5, 225, 138)  , "RED"    , 2 , (0,0,255)     ],
+                [(7, 186, 77), (13, 235, 187)  , "ORANGE" , 3 , (0,128,255)   ], 
                 [(21, 160, 125), (30, 255, 255) , "YELLOW" , 4 , (0,255,255)   ],
-                [(50, 10, 51)  , (85, 59, 99)   , "GREEN"  , 5 , (0,255,0)     ],  
+                [(40, 26, 12)  , (100, 149, 50)   , "GREEN"  , 5 , (0,255,0)     ],  
                 [(105, 12, 45), (113, 107, 131)  , "BLUE"   , 6 , (255,0,0)     ],  
                 [(121, 25, 61) , (160, 60, 126) , "PURPLE" , 7 , (255,0,127)   ], 
 #                [(0, 0, 70)     , (179, 50, 200)   , "GRAY"   , 8 , (128,128,128) ],      
@@ -67,7 +67,7 @@ class resReader:
             #filter invalid contours, store valid ones
             for k in range(len(contours)-1,-1,-1):
                 #print(contours)
-                print(self.validContour(contours[k]))
+                #print(self.validContour(contours[k]))
                 if (self.validContour(contours[k])):
                     leftmostPoint = tuple(contours[k][contours[k][:,:,0].argmin()][0])
                     bandsPos += [leftmostPoint + tuple(clr[2:])]
