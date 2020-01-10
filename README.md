@@ -4,7 +4,7 @@ The main purpose of this project is to construct an automated resistor recognise
 ## Hareware setup
 * camera: Logitech C920
 
-> If different camera is used, it may be necessory to modify resolution setting for camera capture.
+> If different camera is used, it may be necessary to modify resolution setting for camera capture.
 
 ## Software dependency
 * numpy=1.16.4
