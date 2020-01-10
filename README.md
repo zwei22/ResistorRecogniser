@@ -7,8 +7,8 @@ The main purpose of this project is to construct an automated resistor recognise
 > If different camera is used, it may be necessory to modify resolution setting for camera capture.
 
 ## Software dependency
-* numpy
-* opencv4
+* numpy=1.16.4
+* opencv-python=3.4.3
 
 ## Execution
 Run the program with the following command:
